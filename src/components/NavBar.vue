@@ -1,5 +1,6 @@
 <script setup>
-import { ref, watch } from 'vue'
+import { onMounted, ref } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import {
   Disclosure,
   DisclosureButton,
@@ -18,6 +19,11 @@ import {
   ChevronDownIcon
 } from '@heroicons/vue/24/outline'
 import PasswordModal from '@/components/Modals/PasswordModal.vue'
+import { useEventsStore } from '@/stores/events'
+
+const eventsStore = useEventsStore()
+const route = useRoute()
+const router = useRouter()
 
 const user = {
   name: 'Tom Cook',
@@ -33,7 +39,22 @@ const userNavigation = [
   { name: 'Sign out', action: () => (showPasswordNotification.value = true) }
 ]
 const showNavigation = ref(false)
-const eventName = ref('test event')
+const eventName = ref('')
+onMounted(() => {
+  if (route.params.eventId != undefined) {
+    eventsStore
+      .getEventName(route.params.eventId)
+      .then((res) => {
+        eventName.value = res
+      })
+      .catch(() => {
+        // if error, kick user to login page
+        router.push({
+          name: 'userAuth'
+        })
+      })
+  }
+})
 const showPasswordNotification = ref(false)
 </script>
 
