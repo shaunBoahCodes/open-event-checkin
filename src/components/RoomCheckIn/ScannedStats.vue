@@ -27,9 +27,9 @@ const trackStats = [
     </div>
     <div class="space-y-5">
       <div>
-        <h3 class="text-base font-semibold leading-6 text-gray-900">
+        <!-- <h3 class="text-base font-semibold leading-6 text-gray-900">
           Current Session: {{ sessionName }} by {{ speakerName }}
-        </h3>
+        </h3> -->
         <dl class="mt-5 grid grid-cols-2 gap-5">
           <div
             v-for="item in sessionStats"

@@ -1,3 +1,4 @@
+[11:53 pm, 16/07/2023] Don: send me the whole file [11:53 pm, 16/07/2023] 3SG Shaun Laclemence:
 <script setup>
 import { onMounted, ref, watch } from 'vue'
 import { Dialog, DialogPanel, DialogTitle, TransitionChild, TransitionRoot } from '@headlessui/vue'
@@ -122,6 +123,9 @@ watch(
         selectedOptions.value.push(element.id)
       })
       selectAll.value.checked = true
+      disableButton.value = false
+      notificationContent.value.titleText = 'Select items to print'
+      notificationContent.value.messageText = ''
     }, 0)
   }
 )
@@ -169,9 +173,10 @@ watch(
                   <ExclamationCircleIcon v-else class="h-6 w-6 text-red-600" aria-hidden="true" />
                 </div>
                 <div class="mt-3 text-center sm:mt-5">
-                  <DialogTitle as="h3" class="text-base font-semibold leading-6 text-gray-900">{{
-                    notificationContent.titleText
-                  }}</DialogTitle>
+                  <DialogTitle as="h3" class="text-base font-semibold leading-6 text-gray-900">
+                    <span v-if="props.validQRCode">Select items to print</span>
+                    <span v-else>Error!</span>
+                  </DialogTitle>
                   <fieldset v-if="props.validQRCode">
                     <div class="space-y-5 mt-6 sm:mt-5">
                       <div
@@ -271,7 +276,8 @@ watch(
                   class="inline-flex w-full justify-center rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
                   @click="print"
                 >
-                  {{ notificationContent.buttonText }}
+                  <span v-if="props.validQRCode">Print</span>
+                  <span v-else>Try again</span>
                 </button>
               </div>
             </DialogPanel>

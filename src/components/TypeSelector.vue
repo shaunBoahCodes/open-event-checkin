@@ -77,7 +77,7 @@ const selectedRoom = ref({
 const stationTypes = [
   { id: 'registration-scan', name: 'Registration (via scan)', route: 'registerKiosk' },
   { id: 'registration-hybrid', name: 'Registration (hybrid)', route: 'registerHybrid' },
-  { id: 'check-in-daily', name: 'Daily Check-In', route: 'scannerCamera' },
+  { id: 'check-in-daily', name: 'Daily Check-In', route: 'registerKiosk' },
   { id: 'check-in', name: 'Session Check-In', route: 'scannerCamera' },
   { id: 'checkout', name: 'Session Checkout', route: 'scannerCamera' }
 ]
@@ -90,6 +90,7 @@ const availableStations = [
   { id: '3', name: 'Door 1' }
 ]
 const selectedStation = ref(availableStations[1])
+const newStationName = ref('')
 
 async function submitForm() {
   loadingStore.show = true
@@ -115,6 +116,22 @@ async function submitForm() {
     })
   }
   loadingStore.show = false
+}
+
+function disableButton() {
+  if (
+    selectedType.value.id == 'registration-scan' ||
+    selectedType.value.id == 'registration-hybrid' ||
+    selectedType.value.id == 'check-in-daily'
+  ) {
+    if (selectedStation.value.name == 'Create New') {
+      return newStationName.value == ''
+    } else {
+      return selectedEvent.value.id === null
+    }
+  } else {
+    return selectedEvent.value.id === null || selectedRoom.value.id === null
+  }
 }
 </script>
 
@@ -362,6 +379,7 @@ async function submitForm() {
               name="station"
               type="text"
               required="true"
+              v-model="newStationName"
               class="block pl-2 w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-gray-300 placeholder:text-gray-400 focus:ring-blue-600 sm:text-sm sm:leading-6"
             />
           </div>
@@ -371,6 +389,8 @@ async function submitForm() {
           <button
             type="submit"
             class="flex w-full justify-center rounded-md bg-blue-600 px-3.5 py-2.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
+            :class="disableButton() ? 'opacity-50 cursor-not-allowed' : ''"
+            :disabled="disableButton()"
           >
             Go
           </button>

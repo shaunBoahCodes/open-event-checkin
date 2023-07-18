@@ -1,12 +1,13 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import UserAuth from '@/views/UserAuth.vue'
 import StationSelector from '@/views/StationSelector.vue'
-import QRScannerCamera from '@/components/QRScanner/ScannerCamera.vue'
-//import QRScannedStats from '@/components/QRScanner/ScannedStats.vue'
+import QRScannerCamera from '@/components/RoomCheckIn/Scanner/ScannerCamera.vue'
+import QRScannedStats from '@/components/RoomCheckIn/Stats/ScannedStats.vue'
+import Scanner from '@/views/Scanner.vue'
 import Registration from '@/views/Registration.vue'
 import RegistrationKiosk from '@/components/Registration/Kiosk/ScannerCamera.vue'
-//import RegistrationStats from '@/components/Registration/Manual/RegistrationStats.vue'
-import RegistrationManual from '@/components/Registration/Manual/ScanSearch.vue'
+import RegistrationStats from '@/components/Registration/Stats/RegistrationStats.vue'
+import RegistrationHybrid from '@/components/Registration/Hybrid/ScanSearch.vue'
 import NotFound from '@/views/NotFound.vue'
 import AuthTemplate from '@/AuthTemplate.vue'
 
@@ -40,16 +41,34 @@ const router = createRouter({
               component: RegistrationKiosk
             },
             {
-              path: 'manual',
+              path: 'hybrid',
               name: 'registerHybrid',
-              component: RegistrationManual
+              component: RegistrationHybrid
+            },
+            {
+              path: 'stats',
+              name: 'registrationStats',
+              component: RegistrationStats
             }
           ]
         },
         {
           path: ':roomId/scanner/:scannerType',
-          name: 'scannerCamera',
-          component: QRScannerCamera
+          name: 'roomScanner',
+          redirect: { name: 'scannerCamera' },
+          component: Scanner,
+          children: [
+            {
+              path: 'scanner',
+              name: 'scannerCamera',
+              component: QRScannerCamera
+            },
+            {
+              path: 'stats',
+              name: 'scannerStats',
+              component: QRScannedStats
+            }
+          ]
         }
       ]
     },

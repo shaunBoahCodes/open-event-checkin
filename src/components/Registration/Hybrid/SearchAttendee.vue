@@ -1,57 +1,67 @@
 <script setup>
-import { ref } from 'vue'
-import { XCircleIcon, PrinterIcon, MagnifyingGlassIcon } from '@heroicons/vue/20/solid'
-import { FunnelIcon } from '@heroicons/vue/24/outline'
+import { ref, watch } from 'vue'
+import { XCircleIcon, MagnifyingGlassIcon, PrinterIcon } from '@heroicons/vue/20/solid'
 
-// INITIALISE TEMPLATE REFS
+const query = ref('')
+const typing = ref(false)
 const searchBar = ref(null)
 
-const menuOpen = ref(false)
-const query = ref('')
+const erase = () => {
+  query.value = ''
+}
+
+watch(query, () => {
+  if (query.value !== '') typing.value = true
+  else typing.value = false
+})
+
+const checkIn = (item) => {
+  item.checkedIn.value = true
+}
 
 const items = [
   {
     id: 1,
-    name: 'Wei Tat Chung',
-    email: 'wtc@email.com',
+    name: 'John Doe',
+    email: 'JD@email.com',
     checkedIn: ref(false),
     info: {
       role: 'Chairperson',
       memberType: 'Organiser',
-      organisation: 'SUSS AI-IG'
+      organisation: 'JD Org'
     }
   },
   {
     id: 2,
-    name: 'Don Chia',
-    email: 'wtc@email.com',
+    name: 'Jane Doe',
+    email: 'JD@email.com',
     checkedIn: ref(false),
     info: {
       role: 'Chairperson',
       memberType: 'Organiser',
-      organisation: 'SUSS AI-IG'
+      organisation: 'JD Org'
     }
   },
   {
     id: 3,
-    name: 'Shaun Ming Laclemence',
-    email: 'wtc@email.com',
+    name: 'John Tan',
+    email: 'JT@email.com',
     checkedIn: ref(false),
     info: {
       role: 'Chairperson',
       memberType: 'Organiser',
-      organisation: 'SUSS AI-IG'
+      organisation: 'JD Org'
     }
   },
   {
     id: 4,
-    name: 'Very very very very very very very very very very long name',
-    email: 'wtc@email.com',
+    name: 'Jane Tan',
+    email: 'JT@email.com',
     checkedIn: ref(false),
     info: {
       role: 'Chairperson',
       memberType: 'Organiser',
-      organisation: 'SUSS AI-IG'
+      organisation: 'JD Org'
     }
   }
 ]

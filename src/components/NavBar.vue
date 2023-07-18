@@ -25,26 +25,12 @@ const eventsStore = useEventsStore()
 const route = useRoute()
 const router = useRouter()
 
-const user = {
-  name: 'Tom Cook',
-  icon: UserCircleIcon
-}
-const navigation = [
-  { name: 'Main', href: '#', current: true, icon: HomeIcon },
-  { name: 'Statistics', href: '#', current: false, icon: ChartBarIcon },
-  { name: 'Close', href: '#', current: false, icon: XMarkIcon }
-]
-const userNavigation = [
-  { name: 'Stats' },
-  { name: 'Sign out', action: () => (showPasswordNotification.value = true) }
-]
-const showNavigation = ref(false)
-const eventName = ref('')
 onMounted(() => {
   if (route.params.eventId != undefined) {
     eventsStore
       .getEventName(route.params.eventId)
       .then((res) => {
+        console.log(res)
         eventName.value = res
       })
       .catch(() => {
@@ -55,7 +41,33 @@ onMounted(() => {
       })
   }
 })
+
+const user = {
+  name: 'Tom Cook',
+  icon: UserCircleIcon
+}
+
+const userNavigation = [
+  { name: 'Stats', action: () => pushStatsView() },
+  { name: 'Sign out', action: () => (showPasswordNotification.value = true) }
+]
+const eventName = ref('')
 const showPasswordNotification = ref(false)
+
+function pushStatsView() {
+  if (route.params.eventId != undefined) {
+    router.push({
+      name: 'registrationStats',
+      params: {
+        eventId: route.params.eventId
+      }
+    })
+  } else {
+    router.push({
+      name: 'scannerStats'
+    })
+  }
+}
 </script>
 
 <template>
@@ -130,46 +142,9 @@ const showPasswordNotification = ref(false)
           </Menu>
         </div>
       </div>
-      <nav v-if="showNavigation" class="hidden lg:flex lg:space-x-8 lg:py-2" aria-label="Global">
-        <a
-          v-for="item in navigation"
-          :key="item.name"
-          :href="item.href"
-          :class="[
-            item.current
-              ? 'bg-gray-100 text-gray-900'
-              : 'text-gray-900 hover:bg-gray-50 hover:text-gray-900',
-            'inline-flex items-center rounded-md py-2 px-3 text-sm font-medium'
-          ]"
-          :aria-current="item.current ? 'page' : undefined"
-        >
-          <component
-            :is="item.icon"
-            class="h-6 w-6 flex-none text-gray-400 mr-2"
-            aria-hidden="true"
-          />
-          {{ item.name }}
-        </a>
-      </nav>
     </div>
 
     <DisclosurePanel as="nav" class="lg:hidden" aria-label="Global">
-      <div v-if="showNavigation" class="space-y-1 px-2 pb-3 pt-2">
-        <DisclosureButton
-          v-for="item in navigation"
-          :key="item.name"
-          as="a"
-          :href="item.href"
-          :class="[
-            item.current
-              ? 'bg-gray-100 text-gray-900'
-              : 'text-gray-900 hover:bg-gray-50 hover:text-gray-900',
-            'block rounded-md py-2 px-3 text-base font-medium'
-          ]"
-          :aria-current="item.current ? 'page' : undefined"
-          >{{ item.name }}</DisclosureButton
-        >
-      </div>
       <div class="border-t border-gray-200 pb-3 pt-4">
         <div class="flex items-center px-4">
           <div class="flex-shrink-0">
@@ -183,9 +158,15 @@ const showPasswordNotification = ref(false)
           <DisclosureButton
             v-for="item in userNavigation"
             :key="item.name"
-            as="a"
-            :href="item.href"
-            class="block rounded-md px-3 py-2 text-base font-medium text-gray-500 hover:bg-gray-50 hover:text-gray-900"
+            as="button"
+            @click="item.action"
+            class="block w-full text-left rounded-md px-3 py-2 text-base font-medium"
+            :class="[
+              item.name == 'Sign out'
+                ? 'text-red-600 hover:bg-red-100 font-semibold'
+                : 'text-gray-700 hover:bg-gray-100',
+              'w-full text-left px-4 py-2 text-sm'
+            ]"
           >
             {{ item.name }}
           </DisclosureButton>

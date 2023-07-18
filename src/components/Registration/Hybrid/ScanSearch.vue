@@ -5,6 +5,7 @@ import { useRoute } from 'vue-router'
 import { ArrowsRightLeftIcon } from '@heroicons/vue/24/outline'
 
 import PrintModal from '@/components/Modals/PrintModal.vue'
+import SearchAttendee from '@/components/Registration/Hybrid/SearchAttendee.vue'
 
 // get scanner type from vue router params
 const route = useRoute()
@@ -51,19 +52,22 @@ const decode = () => {
   console.log(QRCodeValue)
 }
 
+const refreshComponent = () => {
+  componentKey.value += 1
+}
+
 const updateShowNotification = (value) => {
   showNotification.value = value
 }
 
-const printFunction = () => {
+const fireFunction = () => {
   // print user pass here
   console.log('Printing...')
-  // refreshComponent()
 }
 
 const switchCamera = () => {
   camera.value = camera.value === 'front' ? 'rear' : 'front'
-  // refreshComponent()
+  refreshComponent()
 }
 
 async function logErrors(promise) {
@@ -86,33 +90,37 @@ async function logErrors(promise) {
       @print="printFunction"
     />
     <div
-      class="grid grid-cols-1 lg:grid-cols-2 lg:gap-6 w-full align-middle justify-center items-center place-items-center"
+      class="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-6 w-full align-middle justify-center items-center place-items-center"
     >
-      <div>
-        <qrcode-stream
-          :key="componentKey"
-          class="!aspect-square !h-auto max-w-sm md:max-w-md lg:max-w-lg grid-cols-1 align-middle justify-center items-center"
-          :track="selected.value"
-          @init="logErrors"
-          :camera="camera"
-          @decode="decode"
-        >
-        </qrcode-stream>
-        <button
-          type="button"
-          class="mt-4 inline-flex items-center gap-x-2 rounded-md bg-blue-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
-          @click="switchCamera"
-        >
-          <ArrowsRightLeftIcon class="-ml-0.5 h-5 w-5" aria-hidden="true" />
-          Switch Camera
-        </button>
+      <div class="flex flex-col">
+        <div class="w-full flex justify-center">
+          <h2 class="text-3xl font-bold tracking-tight text-gray-900 sm:text-2xl">
+            Scan QR on Ticket
+          </h2>
+        </div>
+        <div class="w-full">
+          <div class="mx-auto w-fit">
+            <qrcode-stream
+              :key="componentKey"
+              class="!aspect-square !h-auto max-w-sm md:max-w-md lg:max-w-lg grid-cols-1 align-middle justify-center items-center mt-2"
+              :track="selected.value"
+              @init="logErrors"
+              :camera="camera"
+              @decode="decode"
+            />
+            <button
+              type="button"
+              class="mt-4 inline-flex items-center gap-x-2 rounded-md bg-blue-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
+              @click="switchCamera"
+            >
+              <ArrowsRightLeftIcon class="-ml-0.5 h-5 w-5" aria-hidden="true" />
+              Switch Camera
+            </button>
+          </div>
+        </div>
       </div>
-      <div class="w-full flex-auto text-center grid-cols-1">
-        <h2 class="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
-          Scan QR on Ticket
-        </h2>
-        <p class="mt-6 text-lg leading-8 text-gray-500">Kindly wait for your badge to print</p>
-      </div>
+
+      <SearchAttendee class="w-full" />
     </div>
   </div>
 </template>
