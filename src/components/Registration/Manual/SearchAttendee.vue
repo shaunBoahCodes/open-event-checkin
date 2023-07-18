@@ -54,6 +54,17 @@ const items = [
       organisation: 'SUSS AI-IG'
     }
   },
+  {
+    id: 5,
+    name: 'Very very very very very very very very very very long name',
+    email: 'wtc@email.com',
+    checkedIn: ref(false),
+    info: {
+      role: 'Chairperson',
+      memberType: 'Organiser',
+      organisation: 'SUSS AI-IG'
+    }
+  }
 ]
 
 const filterOptions = [
@@ -172,8 +183,11 @@ const filterOptions = [
       </div>
     </div>
 
-    <div v-if="items.length > 0" class="mt-5 h-96 overflow-scroll">
-      <ul role="list" class="flex flex-col gap-3">
+    <div v-if="items.length > 0" class="mt-5 h-96 overflow-y-scroll scrollbar-hide">
+      <ul
+        role="list"
+        :class="[!filterOptions.some((obj) => obj.show.value) && 'gap-4', 'flex flex-col gap-3']"
+      >
         <li
           v-for="item in items"
           :key="item.id"
